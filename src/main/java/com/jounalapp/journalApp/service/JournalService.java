@@ -1,0 +1,63 @@
+package com.jounalapp.journalApp.service;
+
+import com.jounalapp.journalApp.entity.JournalEntity;
+import com.jounalapp.journalApp.entity.User;
+import com.jounalapp.journalApp.repo.JournalRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Component
+public class JournalService {
+
+    @Autowired
+    public JournalRepo journalrepo;
+
+    @Autowired
+    public UserService userv;
+
+    @Transactional
+    public void createEntry(JournalEntity jentity, String uname){
+        try {
+            User user = userv.findByUname(uname);
+            JournalEntity save = journalrepo.save(jentity);
+            user.getJentries().add(save);
+            userv.update(user);
+        }
+        catch(Exception e){
+
+            throw e;
+        }
+    }
+
+    public List<JournalEntity> showall(){
+        return journalrepo.findAll();
+    }
+
+    public Optional<JournalEntity> showbyid(String id){
+        return journalrepo.findById(id);
+    }
+
+    public void delete(String id, String username){
+        User user = userv.findByUname(username);
+        user.getJentries().removeIf(x -> x.getId().equals(id));
+        userv.createUser(user);
+        journalrepo.deleteById(id);
+
+
+    }
+
+    public JournalEntity update(JournalEntity jentity){
+        return journalrepo.save(jentity);
+    }
+
+
+
+
+
+
+
+}
