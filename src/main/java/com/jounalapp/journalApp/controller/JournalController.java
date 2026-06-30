@@ -23,7 +23,7 @@ public class JournalController {
     @Autowired
     private UserService userv;
 
-    @PostMapping("{uname}")
+    @PostMapping
     public ResponseEntity<?> store(@RequestBody JournalEntity je,@PathVariable String uname ) {
         je.setDate(LocalDate.now());
         jservice.createEntry(je,uname);
