@@ -4,6 +4,9 @@ import com.jounalapp.journalApp.entity.JournalEntity;
 import com.jounalapp.journalApp.entity.User;
 import com.jounalapp.journalApp.repo.JournalRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +23,10 @@ public class JournalService {
     public UserService userv;
 
     @Transactional
-    public void createEntry(JournalEntity jentity, String uname){
+    public void createEntry(JournalEntity jentity ){
         try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String uname = auth.getName();
             User user = userv.findByUname(uname);
             JournalEntity save = journalrepo.save(jentity);
             user.getJentries().add(save);

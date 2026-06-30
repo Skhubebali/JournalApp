@@ -40,6 +40,7 @@ public class UserService {
         return userepo.findByUname(uname);
     }
     public User update(User user){
+        user.setPassword(pwdencoder.encode(user.getPassword()));
         return userepo.save(user);
     }
 }

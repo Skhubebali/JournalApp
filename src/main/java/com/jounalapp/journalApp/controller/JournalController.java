@@ -7,6 +7,8 @@ import com.jounalapp.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,9 +26,10 @@ public class JournalController {
     private UserService userv;
 
     @PostMapping
-    public ResponseEntity<?> store(@RequestBody JournalEntity je,@PathVariable String uname ) {
+    public ResponseEntity<?> store(@RequestBody JournalEntity je ) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         je.setDate(LocalDate.now());
-        jservice.createEntry(je,uname);
+        jservice.createEntry(je);
         return new ResponseEntity<JournalEntity>(HttpStatus.CREATED);
     }
 
