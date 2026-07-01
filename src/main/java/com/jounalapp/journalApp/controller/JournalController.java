@@ -61,29 +61,28 @@ public class JournalController {
        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
-    @PutMapping("{userid}/{myid}")
-    public JournalEntity update(@PathVariable String myid,
-                                @RequestBody JournalEntity je,@PathVariable String userid) {
-        User user = userv.findByUname(userid);
+    @PutMapping("myid/{myid}")
+    public ResponseEntity<?> update(@RequestBody JournalEntity je,@PathVariable String myid) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String uname = auth.getName();
+            User user = userv.findByUname(uname);
+           JournalEntity old =  user.getJentries().stream().filter(x -> x.getId().equals(myid)).findFirst().orElse(null);
+           if(old != null){
+                if(je.getTitle() != null){
+                    old.setTitle(je.getTitle());
+                }
+                if(je.getContent() != null){
+                    old.setContent(je.getContent());
+                }
+               jservice.update(old);
+               return new ResponseEntity<>(old,HttpStatus.OK);
+           }
 
-        JournalEntity old = jservice.showbyid(myid).orElse(null);
-
-        System.out.println("Old = " + old);
-
-        if (old != null) {
-            if (je.getTitle() != null) {
-                old.setTitle(je.getTitle());
-            }
-
-            if (je.getContent() != null) {
-                old.setContent(je.getContent());
-            }
-
-            return jservice.update(old);
+           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return null;
-    }
+
+
     @DeleteMapping("{username}/{myid}")
     public ResponseEntity<?> delete(@PathVariable String myid, @PathVariable String username) {
         jservice.delete(myid,username);
