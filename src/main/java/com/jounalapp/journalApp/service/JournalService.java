@@ -51,12 +51,22 @@ public class JournalService {
         return userv.findByUname(uname);
     }
 
-    public void delete(String id, String username){
-        User user = userv.findByUname(username);
-        user.getJentries().removeIf(x -> x.getId().equals(id));
-        userv.saveUser(user);
-        journalrepo.deleteById(id);
-
+    @Transactional
+    public boolean delete(String id, String username){
+        boolean remove = false;
+        try {
+            User user = userv.findByUname(username);
+            remove = user.getJentries().removeIf(x -> x.getId().equals(id));
+            if(remove) {
+                userv.saveUser(user);
+                journalrepo.deleteById(id);
+                return true;
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error deleting entry: " + e);
+        }
+        return false;
 
     }
 
