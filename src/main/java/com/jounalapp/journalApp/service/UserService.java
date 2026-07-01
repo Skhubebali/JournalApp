@@ -26,6 +26,9 @@ public class UserService {
         user.setRoles(Arrays.asList("User"));
         return userepo.save(user);
     }
+    public User saveUser(User user){
+        return userepo.save(user);
+    }
 
     public List<User> getUsers(){
         return userepo.findAll();

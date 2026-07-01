@@ -30,7 +30,7 @@ public class JournalService {
             User user = userv.findByUname(uname);
             JournalEntity save = journalrepo.save(jentity);
             user.getJentries().add(save);
-            userv.update(user);
+            userv.saveUser(user);
         }
         catch(Exception e){
 
@@ -43,13 +43,18 @@ public class JournalService {
     }
 
     public Optional<JournalEntity> showbyid(String id){
+
         return journalrepo.findById(id);
+    }
+
+    public User findByname(String uname){
+        return userv.findByUname(uname);
     }
 
     public void delete(String id, String username){
         User user = userv.findByUname(username);
         user.getJentries().removeIf(x -> x.getId().equals(id));
-        userv.createUser(user);
+        userv.saveUser(user);
         journalrepo.deleteById(id);
 
 

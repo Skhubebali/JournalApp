@@ -38,7 +38,7 @@ public class UserController {
 
            isuser.setUname(user.getUname());
            isuser.setPassword(user.getPassword());
-           userv.update(isuser);
+           userv.createUser(isuser);
 
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
     }
