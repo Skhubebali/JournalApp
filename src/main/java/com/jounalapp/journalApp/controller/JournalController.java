@@ -35,7 +35,17 @@ public class JournalController {
     }
 
 
-
+    @GetMapping
+    public ResponseEntity<?> getall(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String uname = auth.getName();
+        User user = userv.findByUname(uname);
+        List<JournalEntity> entries= user.getJentries();
+        if(!entries.isEmpty()){
+            return new ResponseEntity<>(entries,HttpStatus.FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
     @GetMapping("myid/{id}")
     public ResponseEntity<?> getbyId(@PathVariable String id) {
        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
